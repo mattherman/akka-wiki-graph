@@ -1,12 +1,14 @@
+using Akka.Actor;
 using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
+using WikiGraph.Actors;
 
 namespace WikiGraph.Hubs
 {
-    public class WikiGraphHub : Hub {
-        public async Task SendMessage(string user, string message)
+    public class WikiGraphHub : Hub 
+    {
+        public void SendMessage(string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            SystemActors.SignalRActor.Tell(message, ActorRefs.Nobody);
         }
     }
 }

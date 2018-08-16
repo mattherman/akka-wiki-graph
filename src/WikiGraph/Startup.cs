@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ namespace WikiGraph
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR();
+            services.AddSingleton<WikiGraphHubHelper, WikiGraphHubHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +35,8 @@ namespace WikiGraph
             app.UseSignalR(routes => {
                 routes.MapHub<WikiGraphHub>("/wikiGraphHub");
             });
+
+            app.ApplicationServices.GetService<WikiGraphHubHelper>().StartAsync(CancellationToken.None);
         }
     }
 }
