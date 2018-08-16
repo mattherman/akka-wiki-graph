@@ -27,7 +27,7 @@ namespace WikiGraph.Hubs
 
         internal void WriteMessage(string message)
         {
-            _hub.Clients.All.SendAsync("ReceiveMessage", message);
+            _hub.Clients.All.SendAsync("ReceiveDebugInfo", message);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

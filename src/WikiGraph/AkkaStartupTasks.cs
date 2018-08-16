@@ -9,7 +9,8 @@ namespace WikiGraph
         public static ActorSystem StartAkka()
         {
             SystemActors.ActorSystem = ActorSystem.Create("wikiGraph");
-            SystemActors.SignalRActor = SystemActors.ActorSystem.ActorOf(Props.Create(() => new SignalRActor()), "signalr");
+            SystemActors.CommandProcessorActor = SystemActors.ActorSystem.ActorOf(Props.Create(() => new CommandProcessorActor()), "commandProcessor");
+            SystemActors.SignalRActor = SystemActors.ActorSystem.ActorOf(Props.Create(() => new SignalRActor(SystemActors.CommandProcessorActor)), "signalr");
             return SystemActors.ActorSystem;
         }
     }

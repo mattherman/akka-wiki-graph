@@ -6,9 +6,9 @@ namespace WikiGraph.Hubs
 {
     public class WikiGraphHub : Hub 
     {
-        public void SendMessage(string message)
+        public void SubmitAddress(string address)
         {
-            SystemActors.SignalRActor.Tell(message, ActorRefs.Nobody);
+            SystemActors.SignalRActor.Tell(address, ActorRefs.Nobody);
         }
     }
 }

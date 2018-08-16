@@ -18,9 +18,11 @@ namespace WikiGraph.Actors
 
         public IStash Stash { get; set; }
         private WikiGraphHubHelper _hub;
+        private IActorRef _commandProcessor;
 
-        public SignalRActor()
+        public SignalRActor(IActorRef commandProcessor)
         {
+            _commandProcessor = commandProcessor;
             WaitingForHub();
         }
 
@@ -38,7 +40,8 @@ namespace WikiGraph.Actors
 
         private void HubAvailable()
         {
-            Receive<string>(str => _hub.WriteRawMessage(str));
+            Receive<string>(addr => _commandProcessor.Tell(new CommandProcessorActor.AttemptCrawl(addr)));
+            Receive<CommandProcessorActor.CrawlAttemptFailed>(m => _hub.WriteMessage($"Crawl attempt failed: {m.Reason}"));
         }
     }
 }
