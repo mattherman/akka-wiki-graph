@@ -1,5 +1,7 @@
 using System;
 using Akka.Actor;
+using WikiGraph.Crawler;
+using WikiGraph.Crawler.Messages;
 
 namespace WikiGraph.Actors 
 {
@@ -25,8 +27,11 @@ namespace WikiGraph.Actors
             }
         }
 
+        private IActorRef _jobHandler;
+
         public CommandProcessorActor()
         {
+            _jobHandler = Context.ActorOf(Props.Create(() => new CrawlHandlerActor()), "crawlHandler");
             AcceptCommands();
         }
 
@@ -45,6 +50,8 @@ namespace WikiGraph.Actors
                     Sender.Tell(new CrawlAttemptFailed("URI host must contain 'wikipedia.org'"));
                     return;
                 }
+
+                _jobHandler.Tell(new CrawlJob(uri));
             });
         }
     }

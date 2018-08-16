@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3BCF169C-19F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiGraph", "src\WikiGraph\WikiGraph.csproj", "{FA18467C-76C1-43F3-8E2B-7FEA8856A75E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiGraph.Crawler", "src\WikiGraph.Crawler\WikiGraph.Crawler.csproj", "{4359F98F-7563-4E9A-8F6F-6CD25818334F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +34,21 @@ Global
 		{FA18467C-76C1-43F3-8E2B-7FEA8856A75E}.Release|x64.Build.0 = Release|Any CPU
 		{FA18467C-76C1-43F3-8E2B-7FEA8856A75E}.Release|x86.ActiveCfg = Release|Any CPU
 		{FA18467C-76C1-43F3-8E2B-7FEA8856A75E}.Release|x86.Build.0 = Release|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Debug|x64.Build.0 = Debug|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Debug|x86.Build.0 = Debug|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Release|x64.ActiveCfg = Release|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Release|x64.Build.0 = Release|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Release|x86.ActiveCfg = Release|Any CPU
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FA18467C-76C1-43F3-8E2B-7FEA8856A75E} = {3BCF169C-19F9-44DA-8168-ED2DE9A32EFB}
+		{4359F98F-7563-4E9A-8F6F-6CD25818334F} = {3BCF169C-19F9-44DA-8168-ED2DE9A32EFB}
 	EndGlobalSection
 EndGlobal

@@ -10,7 +10,5 @@ namespace WikiGraph.Actors
         public static ActorSystem ActorSystem;
 
         public static IActorRef SignalRActor = ActorRefs.Nobody;
-
-        public static IActorRef CommandProcessorActor = ActorRefs.Nobody;
     }
 }
