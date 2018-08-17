@@ -4,11 +4,11 @@ namespace WikiGraph.Crawler
 {
     public class CrawlJobResult
     {
-        public IList<Article> Articles { get; }
+        public IDictionary<string, ISet<string>> Graph { get; }
 
-        public CrawlJobResult(IList<Article> articles)
+        public CrawlJobResult(IDictionary<string, ISet<string>> graph)
         {
-            Articles = articles;
+            Graph = graph;
         }
     }
 }

@@ -3,7 +3,7 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/wikiGraphHub").build();
 
 connection.on("ReceiveDebugInfo", addDebugMessage);
-connection.on("ReceiveArticle", receiveArticle);
+connection.on("ReceiveGraph", receiveGraph);
 
 connection.start().catch(function (err) {
     return console.error(err.toString());
@@ -24,20 +24,20 @@ function addDebugMessage(message) {
     document.getElementById("messagesList").appendChild(li);
 }
 
-function receiveArticle(article) {
+function receiveGraph(graph) {
     var root = document.getElementById("messagesList");
-
-    var linkedArticles = article.linkedArticles;
-    for (var i = 0; i < linkedArticles.length; i++) {
-        outputArticle(root, linkedArticles[i]);
-    }
+    console.log(graph);
+    for(var node in graph) {
+        outputNode(root, node, graph[node]);
+     }
 }
 
-function outputArticle(listRoot, article) {
-    var link = createArticleLink(article.title);
+function outputNode(listRoot, node, children) {
+    var link = createArticleLink(node);
+    var text = document.createTextNode(' - ' + children.join(','));
     var li = document.createElement("li");
-    li.textContent = "Linked to ";
     li.appendChild(link);
+    li.appendChild(text);
     listRoot.appendChild(li);
 }
 

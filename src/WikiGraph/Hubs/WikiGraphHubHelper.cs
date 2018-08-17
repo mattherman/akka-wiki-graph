@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
@@ -27,9 +28,9 @@ namespace WikiGraph.Hubs
             _hub.Clients.All.SendAsync("ReceiveDebugInfo", message);
         }
 
-        internal void SendArticle(Article article)
+        internal void SendGraph(IDictionary<string, ISet<string>> graph)
         {
-            _hub.Clients.All.SendAsync("ReceiveArticle", article);
+            _hub.Clients.All.SendAsync("ReceiveGraph", graph);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

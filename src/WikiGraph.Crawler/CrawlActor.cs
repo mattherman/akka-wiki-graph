@@ -6,7 +6,7 @@ using WikiGraph.Crawler.Messages;
 
 namespace WikiGraph.Crawler
 {
-    public class CrawlActor : ReceiveActor
+    public class CrawlActor : ReceiveActor, IWithUnboundedStash
     {
         public class PageCrawlRequest
         {
@@ -17,6 +17,8 @@ namespace WikiGraph.Crawler
                 Address = address;
             }
         }
+
+        public class PageCrawlFailed { }
 
         public class PageCrawlResult
         {
@@ -32,20 +34,30 @@ namespace WikiGraph.Crawler
 
         private IActorRef _downloadActor;
         private IActorRef _articleParserActor;
+        private IActorRef _currentSender;
+
+        public IStash Stash { get; set; }
 
         public CrawlActor()
         {
             _downloadActor = Context.ActorOf(Props.Create(() => new DownloadActor()), "download");
             _articleParserActor = Context.ActorOf(Props.Create(() => new ArticleParserActor()), "articleParser");
-            AcceptingCrawlJobs();
+            AcceptingCrawlRequests();
         }
 
-        private void AcceptingCrawlJobs()
+        private void AcceptingCrawlRequests()
         {
             Receive<PageCrawlRequest>(request => {
+                _currentSender = Sender;
                 _downloadActor.Tell(request.Address);
                 Become(ProcessingJob);
             });
+        }
+
+        private void BecomeAcceptingCrawlRequests()
+        {
+            Become(AcceptingCrawlRequests);
+            Stash.UnstashAll();
         }
 
         private void ProcessingJob()
@@ -57,14 +69,17 @@ namespace WikiGraph.Crawler
                 }
                 else
                 {
-                    Become(AcceptingCrawlJobs);
+                    _currentSender.Tell(new PageCrawlFailed());
+                    BecomeAcceptingCrawlRequests();
                 }
             });
 
             Receive<ArticleParserActor.ArticleParseResult>(result => {
-                Context.Parent.Tell(new PageCrawlResult(result.Title, result.LinkedArticles));
-                Become(AcceptingCrawlJobs);
+                _currentSender.Tell(new PageCrawlResult(result.Title, result.LinkedArticles));
+                BecomeAcceptingCrawlRequests();
             });
+
+            ReceiveAny(_ => Stash.Stash());
         }
     }
 }

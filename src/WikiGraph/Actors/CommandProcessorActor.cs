@@ -40,7 +40,7 @@ namespace WikiGraph.Actors
             Receive<AttemptCrawl>(m => {
                 if (Uri.IsWellFormedUriString(m.Address, UriKind.Absolute) && m.Address.Contains("wikipedia.org/wiki"))
                 {
-                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address), Sender));
+                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address), 2, Sender));
                 }
                 else 
                 {

@@ -34,20 +34,23 @@ namespace WikiGraph.Crawler
                 var client = HttpClientFactory.GetClient();
 
                 // TODO: Update this to follow the `ContinueWith().PipeTo()` pattern
-                var response = client.GetAsync(uri).Result;
-                if (response.StatusCode == HttpStatusCode.OK)
+                try 
                 {
-                    try
+                    var response = client.GetAsync(uri).Result;
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
                         var pageBytes = response.Content.ReadAsStringAsync().Result;
                         Self.Tell(new PageDownloadResult(true, pageBytes));
                     }
-                    catch //timeout exceptions!
+                    else 
                     {
                         Self.Tell(new PageDownloadResult(false, string.Empty));
                     }
                 }
-                Self.Tell(new PageDownloadResult(false, string.Empty));
+                catch
+                {
+                    Self.Tell(new PageDownloadResult(false, string.Empty));
+                }
             });
         }
 
