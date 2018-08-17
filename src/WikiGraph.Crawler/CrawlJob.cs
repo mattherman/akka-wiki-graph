@@ -1,7 +1,7 @@
 using System;
 using Akka.Actor;
 
-namespace WikiGraph.Crawler.Messages
+namespace WikiGraph.Crawler
 {
     public class CrawlJob
     {

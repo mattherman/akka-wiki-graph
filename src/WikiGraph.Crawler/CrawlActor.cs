@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Akka.Actor;
-using WikiGraph.Crawler.Messages;
+using WikiGraph.Crawler;
 
 namespace WikiGraph.Crawler
 {

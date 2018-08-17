@@ -1,7 +1,6 @@
 using System;
 using Akka.Actor;
 using WikiGraph.Crawler;
-using WikiGraph.Crawler.Messages;
 
 namespace WikiGraph.Actors 
 {
