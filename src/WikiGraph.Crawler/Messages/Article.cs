@@ -1,16 +1,17 @@
 using System;
+using System.Collections.Generic;
 
 namespace WikiGraph.Crawler
 {
     public class Article
     {
-        public string Name { get; }
-        public Uri Address { get; }
+        public string Title { get; }
+        public IList<Article> LinkedArticles { get; }
 
-        public Article(string name, Uri address)
+        public Article(string title, IList<Article> linkedArticles)
         {
-            Name = name;
-            Address = address;
+            Title = title;
+            LinkedArticles = linkedArticles;
         }
     }
 }

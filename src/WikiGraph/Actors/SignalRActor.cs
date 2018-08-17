@@ -44,9 +44,9 @@ namespace WikiGraph.Actors
             Receive<string>(addr => _commandProcessor.Tell(new CommandProcessorActor.AttemptCrawl(addr)));
             Receive<CommandProcessorActor.CrawlAttemptFailed>(m => _hub.WriteMessage($"Crawl attempt failed: {m.Reason}"));
             Receive<CrawlJobResult>(result => {
-                foreach (var article in result.LinkedArticles)
+                foreach (var article in result.Articles)
                 {
-                    _hub.SendLink(article.Address, article.Name);
+                    _hub.SendArticle(article);
                 }
             });
         }

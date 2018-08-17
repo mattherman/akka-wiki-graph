@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Akka.Actor;
-using HtmlAgilityPack;
 using WikiGraph.Crawler.Messages;
 
 namespace WikiGraph.Crawler
@@ -8,12 +7,12 @@ namespace WikiGraph.Crawler
     public class CrawlActor : ReceiveActor
     {
         private IActorRef _downloadActor;
-        private IActorRef _linkCollectorActor;
+        private IActorRef _articleParserActor;
 
         public CrawlActor()
         {
             _downloadActor = Context.ActorOf(Props.Create(() => new DownloadActor()), "download");
-            _linkCollectorActor = Context.ActorOf(Props.Create(() => new LinkCollectorActor()), "linkCollector");
+            _articleParserActor = Context.ActorOf(Props.Create(() => new ArticleParserActor()), "articleParser");
             AcceptingCrawlJobs();
         }
 
@@ -30,9 +29,7 @@ namespace WikiGraph.Crawler
             Receive<DownloadActor.PageDownloadResult>(result => {
                 if (result.Success)
                 {
-                    var doc = new HtmlDocument();
-                    doc.LoadHtml(result.Content);
-                    _linkCollectorActor.Tell(doc);
+                    _articleParserActor.Tell(new ArticleParserActor.HtmlDocument(result.Content));
                 }
                 else
                 {
@@ -40,8 +37,8 @@ namespace WikiGraph.Crawler
                 }
             });
 
-            Receive<List<Article>>(linkedArticles => {
-                Context.Parent.Tell(new CrawlJobResult(linkedArticles));
+            Receive<Article>(article => {
+                Context.Parent.Tell(new CrawlJobResult(new List<Article> { article }));
                 Become(AcceptingCrawlJobs);
             });
         }

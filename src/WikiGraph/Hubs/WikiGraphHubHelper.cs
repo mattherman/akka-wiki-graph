@@ -5,6 +5,7 @@ using Akka.Actor;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using WikiGraph.Actors;
+using WikiGraph.Crawler;
 
 namespace WikiGraph.Hubs
 {
@@ -26,9 +27,9 @@ namespace WikiGraph.Hubs
             _hub.Clients.All.SendAsync("ReceiveDebugInfo", message);
         }
 
-        internal void SendLink(Uri address, string title)
+        internal void SendArticle(Article article)
         {
-            _hub.Clients.All.SendAsync("ReceiveLink", address.AbsoluteUri, title);
+            _hub.Clients.All.SendAsync("ReceiveArticle", article);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
