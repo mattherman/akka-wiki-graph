@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Akka.Actor;
 using WikiGraph.Crawler.Messages;
 
@@ -37,8 +38,12 @@ namespace WikiGraph.Crawler
                 }
             });
 
-            Receive<Article>(article => {
-                Context.Parent.Tell(new CrawlJobResult(new List<Article> { article }));
+            Receive<ArticleParserActor.ArticleParseResult>(result => {
+                var articleLinks = result.LinkedArticles
+                                    .Select(linkedTitle => new Article(linkedTitle, new List<Article>()))
+                                    .ToList();
+
+                Context.Parent.Tell(new CrawlJobResult(new List<Article> { new Article(result.Title, articleLinks) }));
                 Become(AcceptingCrawlJobs);
             });
         }

@@ -19,6 +19,18 @@ namespace WikiGraph.Crawler
             }
         }
 
+        public class ArticleParseResult
+        {
+            public string Title { get; }
+            public ICollection<string> LinkedArticles { get; }
+
+            public ArticleParseResult(string title, ICollection<string> linkedArticles)
+            {
+                Title = title;
+                LinkedArticles = linkedArticles;
+            }
+        }
+
         private readonly Regex _linkRegex;
         public ArticleParserActor()
         {
@@ -37,7 +49,7 @@ namespace WikiGraph.Crawler
 
                 var linkNodes = doc.GetElementbyId("bodyContent").SelectNodes("//a");
                 
-                var linkedArticlesMap = new Dictionary<string, Article>();
+                var linkedArticles = new HashSet<string>();
                 foreach (var node in linkNodes)
                 {
                     if (!node.Attributes.Contains("href") || !node.Attributes.Contains("title"))
@@ -45,14 +57,13 @@ namespace WikiGraph.Crawler
 
                     var href = node.Attributes["href"].Value;
                     var title = node.Attributes["title"].Value;
-                    if (_linkRegex.IsMatch(href) && !linkedArticlesMap.ContainsKey(title))
+                    if (_linkRegex.IsMatch(href))
                     {
-                        var uri = new Uri($"http://wikipedia.org{href}");
-                        linkedArticlesMap.Add(title, new Article(title, new List<Article>()));
+                        linkedArticles.Add(title);
                     }
                 }
 
-                Context.Parent.Tell(new Article(parentTitle, linkedArticlesMap.Values.ToList()));
+                Context.Parent.Tell(new ArticleParseResult(parentTitle, linkedArticles));
             });
         }
     }
