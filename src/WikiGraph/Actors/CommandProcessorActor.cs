@@ -40,16 +40,12 @@ namespace WikiGraph.Actors
             Receive<AttemptCrawl>(m => {
                 if (Uri.IsWellFormedUriString(m.Address, UriKind.Absolute) && m.Address.Contains("wikipedia.org/wiki"))
                 {
-                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address)));
+                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address), Sender));
                 }
                 else 
                 {
                     Sender.Tell(new CrawlAttemptFailed("Invalid URI string"));
                 }
-            });
-
-            Receive<CrawlJobResult>(result => {
-                SystemActors.SignalRActor.Tell(result);
             });
         }
     }

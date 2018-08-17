@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Akka.Actor;
@@ -7,6 +8,28 @@ namespace WikiGraph.Crawler
 {
     public class CrawlActor : ReceiveActor
     {
+        public class PageCrawlRequest
+        {
+            public Uri Address { get; }
+            
+            public PageCrawlRequest(Uri address)
+            {
+                Address = address;
+            }
+        }
+
+        public class PageCrawlResult
+        {
+            public string Title { get; }
+            public ICollection<string> LinkedArticles { get; }
+
+            public PageCrawlResult(string title, ICollection<string> linkedArticles)
+            {
+                Title = title;
+                LinkedArticles = linkedArticles;
+            }
+        }
+
         private IActorRef _downloadActor;
         private IActorRef _articleParserActor;
 
@@ -19,8 +42,8 @@ namespace WikiGraph.Crawler
 
         private void AcceptingCrawlJobs()
         {
-            Receive<CrawlJob>(job => {
-                _downloadActor.Tell(job.Address);
+            Receive<PageCrawlRequest>(request => {
+                _downloadActor.Tell(request.Address);
                 Become(ProcessingJob);
             });
         }
@@ -39,11 +62,7 @@ namespace WikiGraph.Crawler
             });
 
             Receive<ArticleParserActor.ArticleParseResult>(result => {
-                var articleLinks = result.LinkedArticles
-                                    .Select(linkedTitle => new Article(linkedTitle, new List<Article>()))
-                                    .ToList();
-
-                Context.Parent.Tell(new CrawlJobResult(new List<Article> { new Article(result.Title, articleLinks) }));
+                Context.Parent.Tell(new PageCrawlResult(result.Title, result.LinkedArticles));
                 Become(AcceptingCrawlJobs);
             });
         }

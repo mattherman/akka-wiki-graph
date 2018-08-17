@@ -32,6 +32,17 @@ namespace WikiGraph.Crawler
         }
 
         private readonly Regex _linkRegex;
+        private static readonly string[] ArticleBlacklist = new [] {
+            "International Standard Book Number",
+            "Digital object identifier",
+            "International Standard Serial Number",
+            "PubMed Central",
+            "PubMed Identifier",
+            "View the content page [c]",
+            "Visit the main page",
+            "Visit the main page [z]"
+        };
+
         public ArticleParserActor()
         {
             _linkRegex = new Regex(@"^(/wiki/)((?!:).)*$");
@@ -57,7 +68,7 @@ namespace WikiGraph.Crawler
 
                     var href = node.Attributes["href"].Value;
                     var title = node.Attributes["title"].Value;
-                    if (_linkRegex.IsMatch(href))
+                    if (_linkRegex.IsMatch(href) && !ArticleBlacklist.Contains(title))
                     {
                         linkedArticles.Add(title);
                     }

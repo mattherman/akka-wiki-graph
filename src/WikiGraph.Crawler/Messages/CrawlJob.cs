@@ -1,4 +1,5 @@
 using System;
+using Akka.Actor;
 
 namespace WikiGraph.Crawler.Messages
 {
@@ -6,9 +7,12 @@ namespace WikiGraph.Crawler.Messages
     {
         public Uri Address { get; }
 
-        public CrawlJob(Uri address)
+        public IActorRef Requestor { get; }
+
+        public CrawlJob(Uri address, IActorRef requestor)
         {
             Address = address;
+            Requestor = requestor;
         }
     }
 }
