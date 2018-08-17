@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
@@ -20,14 +21,14 @@ namespace WikiGraph.Hubs
             _hub = hub;
         }
 
-        internal void WriteRawMessage(string msg)
-        {
-            WriteMessage(msg);
-        }
-
         internal void WriteMessage(string message)
         {
             _hub.Clients.All.SendAsync("ReceiveDebugInfo", message);
+        }
+
+        internal void SendLink(Uri address, string title)
+        {
+            _hub.Clients.All.SendAsync("ReceiveLink", address.AbsoluteUri, title);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

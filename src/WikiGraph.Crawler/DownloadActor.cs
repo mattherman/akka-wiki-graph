@@ -11,20 +11,17 @@ namespace WikiGraph.Crawler
         public class PageDownloadResult
         {
             public bool Success { get; }
-            public byte[] Content { get; }
+            public string Content { get; }
 
-            public PageDownloadResult(bool success, byte[] content)
+            public PageDownloadResult(bool success, string content)
             {
                 Success = success;
                 Content = content;
             }
         }
 
-        private IHttpClientFactory _httpClientFactory;
-
-        public DownloadActor(IHttpClientFactory clientFactory)
+        public DownloadActor()
         {
-            _httpClientFactory = clientFactory;
             ReadyToDownload();
         }
 
@@ -34,35 +31,31 @@ namespace WikiGraph.Crawler
 
                 Become(Downloading);
 
-                using(var client = _httpClientFactory.CreateClient()) 
+                var client = HttpClientFactory.GetClient();
+
+                // TODO: Update this to follow the `ContinueWith().PipeTo()` pattern
+                var response = client.GetAsync(uri).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    client.GetAsync(uri).ContinueWith(httpRequest =>
+                    try
                     {
-                        var response = httpRequest.Result;
-
-                        if (response.StatusCode == HttpStatusCode.OK)
-                        {
-                            try
-                            {
-                                var pageBytes = response.Content.ReadAsByteArrayAsync().Result;
-                                return new PageDownloadResult(true, pageBytes);
-                            }
-                            catch //timeout exceptions!
-                            {
-                                return new PageDownloadResult(false, new byte[0]);
-                            }
-                        }
-
-                        return new PageDownloadResult(false, new byte[0]);
-                    }, TaskContinuationOptions.AttachedToParent & TaskContinuationOptions.ExecuteSynchronously).PipeTo(Self);
+                        var pageBytes = response.Content.ReadAsStringAsync().Result;
+                        Self.Tell(new PageDownloadResult(true, pageBytes));
+                    }
+                    catch //timeout exceptions!
+                    {
+                        Self.Tell(new PageDownloadResult(false, string.Empty));
+                    }
                 }
+                Self.Tell(new PageDownloadResult(false, string.Empty));
             });
         }
 
         private void Downloading()
         {
             Receive<PageDownloadResult>(result => {
-
+                Become(ReadyToDownload);
+                Context.Parent.Tell(result);
             });
         }
     }

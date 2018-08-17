@@ -1,5 +1,6 @@
 using Akka.Actor;
 using Microsoft.AspNetCore.SignalR;
+using WikiGraph.Crawler;
 using WikiGraph.Hubs;
 
 namespace WikiGraph.Actors
@@ -42,6 +43,12 @@ namespace WikiGraph.Actors
         {
             Receive<string>(addr => _commandProcessor.Tell(new CommandProcessorActor.AttemptCrawl(addr)));
             Receive<CommandProcessorActor.CrawlAttemptFailed>(m => _hub.WriteMessage($"Crawl attempt failed: {m.Reason}"));
+            Receive<CrawlJobResult>(result => {
+                foreach (var article in result.LinkedArticles)
+                {
+                    _hub.SendLink(article.Address, article.Name);
+                }
+            });
         }
     }
 }

@@ -38,20 +38,18 @@ namespace WikiGraph.Actors
         private void AcceptCommands()
         {
             Receive<AttemptCrawl>(m => {
-                if (!Uri.IsWellFormedUriString(m.Address, UriKind.Absolute))
+                if (Uri.IsWellFormedUriString(m.Address, UriKind.Absolute) && m.Address.Contains("wikipedia.org/wiki"))
+                {
+                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address)));
+                }
+                else 
                 {
                     Sender.Tell(new CrawlAttemptFailed("Invalid URI string"));
-                    return;
                 }
+            });
 
-                var uri = new Uri(m.Address);
-                if (!uri.Host.Contains("wikipedia.org"))
-                {
-                    Sender.Tell(new CrawlAttemptFailed("URI host must contain 'wikipedia.org'"));
-                    return;
-                }
-
-                _jobHandler.Tell(new CrawlJob(uri));
+            Receive<CrawlJobResult>(result => {
+                SystemActors.SignalRActor.Tell(result);
             });
         }
     }
