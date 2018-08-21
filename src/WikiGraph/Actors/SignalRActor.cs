@@ -17,6 +17,18 @@ namespace WikiGraph.Actors
             }
         }
 
+        public class InitiateCrawl
+        {
+            public string Address { get; }
+            public int Depth { get; }
+
+            public InitiateCrawl(string address, int depth)
+            {
+                Address = address;
+                Depth = depth;
+            }
+        }
+
         public IStash Stash { get; set; }
         private WikiGraphHubHelper _hub;
         private IActorRef _commandProcessor;
@@ -41,7 +53,7 @@ namespace WikiGraph.Actors
 
         private void HubAvailable()
         {
-            Receive<string>(addr => _commandProcessor.Tell(new CommandProcessorActor.AttemptCrawl(addr)));
+            Receive<InitiateCrawl>(initCrawl => _commandProcessor.Tell(new CommandProcessorActor.AttemptCrawl(initCrawl.Address, initCrawl.Depth)));
             Receive<CommandProcessorActor.CrawlAttemptFailed>(m => _hub.WriteMessage($"Crawl attempt failed: {m.Reason}"));
             Receive<CrawlJobResult>(result => {
                 _hub.SendGraph(result.Graph);

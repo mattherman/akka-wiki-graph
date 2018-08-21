@@ -6,9 +6,9 @@ namespace WikiGraph.Hubs
 {
     public class WikiGraphHub : Hub 
     {
-        public void SubmitAddress(string address)
+        public void SubmitAddress(string address, int depth)
         {
-            SystemActors.SignalRActor.Tell(address, ActorRefs.Nobody);
+            SystemActors.SignalRActor.Tell(new SignalRActor.InitiateCrawl(address, depth), ActorRefs.Nobody);
         }
     }
 }

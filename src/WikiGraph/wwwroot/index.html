@@ -6,6 +6,7 @@
                 <div class="col-6">&nbsp;</div>
                 <div class="col-6">
                     Wikipedia Link <input type="text" id="addressInput" />
+                    Depth <input type="number" id="depthInput" />
                     <input type="button" id="submitButton" value="Submit" />
                 </div>
             </div>
@@ -20,8 +21,10 @@
                     <ul id="messagesList"></ul>
                 </div>
             </div>
+            <div id="graph"></div>
         </div>
         <script src="/lib/signalr.js"></script>
+        <script src="/lib/force-graph.min.js"></script>
         <script src="/js/wikiGraph.js"></script>
     </body>
 </html>

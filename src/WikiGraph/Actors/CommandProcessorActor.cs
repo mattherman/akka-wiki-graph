@@ -10,9 +10,12 @@ namespace WikiGraph.Actors
         {
             public string Address { get; }
 
-            public AttemptCrawl(string address)
+            public int Depth { get; }
+
+            public AttemptCrawl(string address, int depth)
             {
                 Address = address;
+                Depth = depth;
             }
         }
 
@@ -39,7 +42,7 @@ namespace WikiGraph.Actors
             Receive<AttemptCrawl>(m => {
                 if (Uri.IsWellFormedUriString(m.Address, UriKind.Absolute) && m.Address.Contains("wikipedia.org/wiki"))
                 {
-                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address), 2, Sender));
+                    _jobHandler.Tell(new CrawlJob(new Uri(m.Address), m.Depth, Sender));
                 }
                 else 
                 {
