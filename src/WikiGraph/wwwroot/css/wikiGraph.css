@@ -1,0 +1,15 @@
+.col-4 {
+    width: 32%
+}
+
+.col-8 {
+    width: 68%;
+}
+
+#messagesList {
+    list-style-type: none;
+    font-family: monospace;
+    height: 90%;
+    overflow: hidden;
+    overflow-y: scroll;
+}

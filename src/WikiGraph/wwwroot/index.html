@@ -1,10 +1,12 @@
 <html>
+    <head>
+        <link href="/css/wikiGraph.css" rel="stylesheet" type="text/css" media="all">
+    </head>
     <body>
         <div class="container">
             <div class="row">&nbsp;</div>
             <div class="row">
-                <div class="col-6">&nbsp;</div>
-                <div class="col-6">
+                <div>
                     Wikipedia Link <input type="text" id="addressInput" />
                     Depth <input type="number" id="depthInput" />
                     Show graph? <input type="checkbox" id="showGraphInput" />
@@ -12,15 +14,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12">
-                    <hr />
-                </div>
+                <hr />
             </div>
-            <div class="row">
+            <div class="row" style="display: inline-block;">
                 <div class="col-4">
-                    <ul id="messagesList" style="list-style-type: none;"></ul>
+                    <ul id="messagesList"></ul>
                 </div>
-                <div class="col-8" id="graph"></div>
+                <div id="graph"></div>
             </div>
             
         </div>

@@ -27,10 +27,17 @@ function initiateCrawl(address, depth) {
     });
 }
 
+function pad(value, desiredLength) {
+    value = value.toString();
+    while (value.length < desiredLength) {
+        value = "0" + value;
+    }
+    return value;
+}
 function addDebugMessage(message) {
     var now = new Date();
-    var timestamp = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds().toFixed(3)}`
-
+    var timestamp = `${pad(now.getHours(), 2)}:${pad(now.getMinutes(), 2)}:${pad(now.getSeconds(), 2)}.${pad(now.getMilliseconds(), 3)}`
+    
     var li = document.createElement("li");
     if (message.type !== 0) {
         li.style.color = "red";
