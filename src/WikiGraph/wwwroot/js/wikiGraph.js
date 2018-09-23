@@ -46,14 +46,8 @@ function showGraph() {
 }
 
 function receiveGraph(graph) {
-    if (!showGraph())
-        return;
-
-    const gData = buildGraphData(graph);
-
-    if (Graph) {
-        updateExistingGraph(gData);
-    } else {
+    if (showGraph()) {
+        const gData = buildGraphData(graph);
         createNewGraph(gData);
     }
 }
@@ -78,18 +72,8 @@ function createNewGraph(graphData) {
         .nodeLabel('id')
         .onNodeClick(node => {
             Graph.centerAt(node.x, node.y, 1000);
-            crawlNode(node);
         })
         .graphData(graphData);
-}
-
-function updateExistingGraph(newData) {
-    const previousData = Graph.graphData();
-
-    Graph.graphData({
-        nodes: _.union(previousData.nodes, newData.nodes),
-        links: _.union(previousData.links, newData.links)
-    });
 }
 
 function crawlNode(node) {
