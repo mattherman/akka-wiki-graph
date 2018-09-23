@@ -46,6 +46,7 @@ namespace WikiGraph.Crawler
         private void InitiatePageCrawl(Uri address)
         {
             _pendingCrawlRequests++;
+            _currentJob.Requestor.Tell(new Debug.PageCrawlStarted(address, _currentDepth));
             _crawlers.Tell(new CrawlActor.PageCrawlRequest(address));
         }
 
@@ -57,10 +58,12 @@ namespace WikiGraph.Crawler
 
                 UpdateGraph(result.Title, result.LinkedArticles);
 
+                _currentJob.Requestor.Tell(new Debug.PageCrawlCompleted(result.Title, result.LinkedArticles.Count));
                 CompleteCrawlRequest();
             });
 
             Receive<CrawlActor.PageCrawlFailed>(_ => {
+                _currentJob.Requestor.Tell(new Debug.PageCrawlFailed());
                 CompleteCrawlRequest();
             });
         }

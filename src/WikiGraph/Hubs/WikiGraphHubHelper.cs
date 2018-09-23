@@ -23,7 +23,7 @@ namespace WikiGraph.Hubs
             _hub = hub;
         }
 
-        internal void WriteMessage(string message)
+        internal void WriteMessage(DebugMessage message)
         {
             _hub.Clients.All.SendAsync("ReceiveDebugInfo", message);
         }

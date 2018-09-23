@@ -28,16 +28,33 @@ function initiateCrawl(address, depth) {
 }
 
 function addDebugMessage(message) {
+    var now = new Date();
+    var timestamp = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds().toFixed(3)}`
+
     var li = document.createElement("li");
-    li.textContent = message;
+    if (message.type !== 0) {
+        li.style.color = "red";
+    }
+
+    li.textContent = `[${timestamp}] ${message.message}`;
+
     document.getElementById("messagesList").appendChild(li);
 }
 
+function showGraph() {
+    return document.getElementById("showGraphInput").checked;
+}
+
 function receiveGraph(graph) {
+    if (!showGraph())
+        return;
+
+    const gData = buildGraphData(graph);
+
     if (Graph) {
-        updateExistingGraph(graph);
+        updateExistingGraph(gData);
     } else {
-        createNewGraph(graph);
+        createNewGraph(gData);
     }
 }
 
@@ -45,15 +62,17 @@ function buildGraphData(graph) {
     const nodes = Object.keys(graph).map(n => ({ id: n.toLowerCase() }));
     const linkCollections = Object.keys(graph).map(n => graph[n].map(l => ({ source: n.toLowerCase(), target: l.toLowerCase() })));
     const links = [].concat.apply([], linkCollections);
-    return {
+    const graphData = {
       nodes: nodes,
       links: links
     };
+
+    console.log(graphData);
+
+    return graphData;
 }
 
-function createNewGraph(graph) {
-    const gData = buildGraphData(graph);
-
+function createNewGraph(graphData) {
     Graph = ForceGraph()
       (document.getElementById('graph'))
         .nodeLabel('id')
@@ -61,11 +80,10 @@ function createNewGraph(graph) {
             Graph.centerAt(node.x, node.y, 1000);
             crawlNode(node);
         })
-        .graphData(gData);
+        .graphData(graphData);
 }
 
-function updateExistingGraph(graph) {
-    const newData = buildGraphData(graph);
+function updateExistingGraph(newData) {
     const previousData = Graph.graphData();
 
     Graph.graphData({

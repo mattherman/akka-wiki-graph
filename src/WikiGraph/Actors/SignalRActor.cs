@@ -54,9 +54,26 @@ namespace WikiGraph.Actors
         private void HubAvailable()
         {
             Receive<InitiateCrawl>(initCrawl => _commandProcessor.Tell(new CommandProcessorActor.AttemptCrawl(initCrawl.Address, initCrawl.Depth)));
-            Receive<CommandProcessorActor.CrawlAttemptFailed>(m => _hub.WriteMessage($"Crawl attempt failed: {m.Reason}"));
+            Receive<CommandProcessorActor.CrawlAttemptFailed>(m => {
+                var msg = new DebugMessage($"Crawl attempt failed: {m.Reason}", MessageType.Error);
+                _hub.WriteMessage(msg);
+            });
             Receive<CrawlJobResult>(result => {
+                var msg = new DebugMessage($"Crawl complete!", MessageType.Informational);
+                _hub.WriteMessage(msg);
                 _hub.SendGraph(result.Graph);
+            });
+
+            Receive<Crawler.Debug.PageCrawlStarted>(m => {
+                var msg = new DebugMessage($"Started page crawl: depth = {m.Depth}, address = {m.Address}", MessageType.Informational);
+                _hub.WriteMessage(msg);
+            });
+            Receive<Crawler.Debug.PageCrawlCompleted>(m => {
+                var msg = new DebugMessage($"Finished page crawl: title = {m.Title}, numLinks = {m.LinkedArticleCount}", MessageType.Informational);
+                _hub.WriteMessage(msg);
+            });
+            Receive<Crawler.Debug.PageCrawlFailed>(m => {
+                var msg = new DebugMessage($"Failed page crawl!", MessageType.Error);
             });
         }
     }

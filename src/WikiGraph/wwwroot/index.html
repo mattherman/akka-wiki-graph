@@ -7,6 +7,7 @@
                 <div class="col-6">
                     Wikipedia Link <input type="text" id="addressInput" />
                     Depth <input type="number" id="depthInput" />
+                    Show graph? <input type="checkbox" id="showGraphInput" />
                     <input type="button" id="submitButton" value="Submit" />
                 </div>
             </div>
@@ -16,12 +17,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6">&nbsp;</div>
-                <div class="col-6">
-                    <ul id="messagesList"></ul>
+                <div class="col-4">
+                    <ul id="messagesList" style="list-style-type: none;"></ul>
                 </div>
+                <div class="col-8" id="graph"></div>
             </div>
-            <div id="graph"></div>
+            
         </div>
         <script src="/lib/signalr.js"></script>
         <script src="/lib/force-graph.min.js"></script>
