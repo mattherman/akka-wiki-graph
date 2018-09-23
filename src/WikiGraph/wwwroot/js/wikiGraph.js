@@ -76,9 +76,4 @@ function createNewGraph(graphData) {
         .graphData(graphData);
 }
 
-function crawlNode(node) {
-    var address = encodeURI("http://wikipedia.org/wiki/" + node.id);
-    initiateCrawl(address, 1);
-}
-
 let Graph;
