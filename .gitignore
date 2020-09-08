@@ -13,6 +13,7 @@
 
 # Build results
 [Dd]ebug/
+!src/WikiGraph.Crawler/Debug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
